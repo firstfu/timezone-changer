@@ -1,33 +1,54 @@
-This is a [Plasmo extension](https://docs.plasmo.com/) project bootstrapped with [`plasmo init`](https://www.npmjs.com/package/plasmo).
+# 時區切換器 Chrome 擴展
 
-## Getting Started
+一個簡單易用的 Chrome 擴展，用於快速切換瀏覽器時區，無需重啟瀏覽器。
 
-First, run the development server:
+## 功能特點
+
+- 快速切換時區，無需重啟瀏覽器
+- 支持所有 IANA 時區
+- 收藏常用時區
+- 記錄最近使用的時區
+- 深色模式支持
+- 簡潔美觀的用戶界面
+
+## 開發
+
+### 環境要求
+
+- Node.js 18+
+- pnpm 8+
+
+### 安裝依賴
+
+```bash
+pnpm install
+```
+
+### 開發模式
 
 ```bash
 pnpm dev
-# or
-npm run dev
 ```
 
-Open your browser and load the appropriate development build. For example, if you are developing for the chrome browser, using manifest v3, use: `build/chrome-mv3-dev`.
-
-You can start editing the popup by modifying `popup.tsx`. It should auto-update as you make changes. To add an options page, simply add a `options.tsx` file to the root of the project, with a react component default exported. Likewise to add a content page, add a `content.ts` file to the root of the project, importing some module and do some logic, then reload the extension on your browser.
-
-For further guidance, [visit our Documentation](https://docs.plasmo.com/)
-
-## Making production build
-
-Run the following:
+### 建置專案
 
 ```bash
 pnpm build
-# or
-npm run build
 ```
 
-This should create a production bundle for your extension, ready to be zipped and published to the stores.
+### 打包擴展
 
-## Submit to the webstores
+```bash
+pnpm package
+```
 
-The easiest way to deploy your Plasmo extension is to use the built-in [bpp](https://bpp.browser.market) GitHub action. Prior to using this action however, make sure to build your extension and upload the first version to the store to establish the basic credentials. Then, simply follow [this setup instruction](https://docs.plasmo.com/framework/workflows/submit) and you should be on your way for automated submission!
+## 使用方法
+
+1. 點擊擴展圖標打開時區選擇器
+2. 在搜索框中輸入城市名稱或時區
+3. 選擇所需時區
+4. 點擊星標可以收藏常用時區
+
+## 授權
+
+MIT License
