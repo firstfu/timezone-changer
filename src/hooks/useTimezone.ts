@@ -36,7 +36,7 @@ export function useTimezone() {
           storage.get<TimezoneInfo[]>("favoriteTimezones")
         ])
 
-        // 更新緩存和狀態
+        // 更新緩存和���態
         if (current) {
           timezoneCache.current = current
           setCurrentTimezone(current)
@@ -76,6 +76,16 @@ export function useTimezone() {
         await storage.set("recentTimezones", updatedRecent)
         setRecentTimezones(updatedRecent)
         timezoneCache.recent = updatedRecent
+
+        // 更新當前標籤頁的時區
+        chrome.runtime.sendMessage({ type: "GET_CURRENT_TAB" }, (tab) => {
+          if (tab?.id) {
+            chrome.tabs.sendMessage(tab.id, {
+              type: "SET_TIMEZONE",
+              timezone: timezone.id
+            })
+          }
+        })
       } catch (error) {
         console.error("Failed to set timezone:", error)
       }

@@ -23,8 +23,6 @@ const preloadTimezones = async () => {
       isSystem: false
     }))
 
-    console.log(timezones)
-
     await storage.set("allTimezones", timezones)
   } catch (error) {
     console.error("Failed to preload timezones:", error)
@@ -34,9 +32,33 @@ const preloadTimezones = async () => {
 // 在擴展啟動時預加載數據
 chrome.runtime.onInstalled.addListener(() => {
   preloadTimezones()
+
+  // 創建右鍵選單
+  chrome.contextMenus.create({
+    id: "timezone-changer",
+    title: "時區切換器",
+    contexts: ["all"]
+  })
 })
 
 // 在擴展啟動時預加載數據
 chrome.runtime.onStartup.addListener(() => {
   preloadTimezones()
+})
+
+// 處理右鍵選單點擊
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "timezone-changer") {
+    chrome.action.openPopup()
+  }
+})
+
+// 監聽來自 popup 的消息
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "GET_CURRENT_TAB") {
+    chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
+      sendResponse(tab)
+    })
+    return true
+  }
 })
