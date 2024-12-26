@@ -36,7 +36,7 @@ export function useTimezone() {
           storage.get<TimezoneInfo[]>("favoriteTimezones")
         ])
 
-        // 更新緩存和���態
+        // 更新緩存和狀態
         if (current) {
           timezoneCache.current = current
           setCurrentTimezone(current)
@@ -52,7 +52,7 @@ export function useTimezone() {
           setFavoriteTimezones(favorites)
         }
       } catch (error) {
-        console.error("Failed to load timezones:", error)
+        console.error("載入時區失敗:", error)
       }
     }
 
@@ -63,9 +63,14 @@ export function useTimezone() {
   const setTimezone = useCallback(
     async (timezone: TimezoneInfo) => {
       try {
+        // 先更新 storage
         await storage.set("currentTimezone", timezone)
-        setCurrentTimezone(timezone)
+
+        // 更新緩存
         timezoneCache.current = timezone
+
+        // 更新狀態
+        setCurrentTimezone(timezone)
 
         // 更新最近使用的時區
         const updatedRecent = [
@@ -73,21 +78,25 @@ export function useTimezone() {
           ...recentTimezones.filter((tz) => tz.id !== timezone.id)
         ].slice(0, 10)
 
+        // 保存最近使用的時區
         await storage.set("recentTimezones", updatedRecent)
-        setRecentTimezones(updatedRecent)
         timezoneCache.recent = updatedRecent
+        setRecentTimezones(updatedRecent)
 
         // 更新當前標籤頁的時區
-        chrome.runtime.sendMessage({ type: "GET_CURRENT_TAB" }, (tab) => {
-          if (tab?.id) {
-            chrome.tabs.sendMessage(tab.id, {
-              type: "SET_TIMEZONE",
-              timezone: timezone.id
-            })
-          }
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true
         })
+        const currentTab = tabs[0]
+        if (currentTab?.id) {
+          await chrome.tabs.sendMessage(currentTab.id, {
+            type: "SET_TIMEZONE",
+            timezone: timezone.id
+          })
+        }
       } catch (error) {
-        console.error("Failed to set timezone:", error)
+        console.error("設置時區失敗:", error)
       }
     },
     [recentTimezones]

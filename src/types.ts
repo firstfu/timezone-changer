@@ -6,3 +6,8 @@ export interface TimezoneInfo {
   isDST: boolean
   isSystem: boolean
 }
+
+export interface StoredTimezone {
+  id: string
+  timestamp: number
+}

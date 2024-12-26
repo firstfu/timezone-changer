@@ -61,7 +61,7 @@ importers:
         specifier: 3.2.4
         version: 3.2.4
       sharp:
-        specifier: ^0.33.5
+        specifier: 0.33.5
         version: 0.33.5
       typescript:
         specifier: 5.3.3
